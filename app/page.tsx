@@ -116,7 +116,7 @@ export default function Home() {
     <main className="relative w-full h-screen">
       {/* Team Members Display */}
       <div className="absolute top-4 left-4 z-10 bg-white p-3 rounded shadow-md max-w-xs">
-        <h3 className="font-bold mb-2 text-center text-blue-700">Équipe de développement</h3>
+        <h3 className="font-bold mb-2 text-center text-blue-700">Team</h3>
         <ul className="space-y-1">
           {teamMembers.map((member, index) => (
             <li key={index} className="border-b border-gray-200 py-1 last:border-0">
