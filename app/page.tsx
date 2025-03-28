@@ -15,9 +15,9 @@ function FollowCamera({ target, cameraView }) {
   useFrame(() => {
     if (target.current) {
       let idealOffset, lookAtPosition;
-      
+
       // Configure camera position and look target based on selected view
-      switch(cameraView) {
+      switch (cameraView) {
         case 'front':
           // Camera in front of the car
           idealOffset = new THREE.Vector3(0, 3, 10);
@@ -49,14 +49,14 @@ function FollowCamera({ target, cameraView }) {
           idealOffset = new THREE.Vector3(0, 3, -10);
           lookAtPosition = target.current.position.clone().add(new THREE.Vector3(0, 0, 10));
       }
-      
+
       // Apply the car's rotation to the camera offset
       idealOffset.applyQuaternion(target.current.quaternion);
       idealOffset.add(target.current.position);
 
       // Smoothly move the camera to the ideal position
       camera.position.lerp(idealOffset, 0.1);
-      
+
       // Point the camera at the look target
       camera.lookAt(lookAtPosition);
     }
@@ -70,6 +70,15 @@ export default function Home() {
   const [cameraView, setCameraView] = useState('front') // Default to front view
   const carRef = useRef()
   const { setCarRef } = useStore()
+
+  // Liste des membres de l'équipe
+  const teamMembers = [
+    "Younès Boufrioua",
+    "Olivier Reynaud",
+    "Charles Delachapelle",
+    "Mardochée Dagbégnon Octave ZOSSOUNGBO",
+    "Fred Tossou"
+  ];
 
   // Only render the 3D content on the client side
   useEffect(() => {
@@ -94,7 +103,7 @@ export default function Home() {
 
   // Initial camera position based on selected view
   const getInitialCameraPos = () => {
-    switch(cameraView) {
+    switch (cameraView) {
       case 'front': return [0, 3, 10]
       case 'back': return [0, 3, -10]
       case 'cockpit': return [0, 1.6, 0]
@@ -105,29 +114,41 @@ export default function Home() {
 
   return (
     <main className="relative w-full h-screen">
+      {/* Team Members Display */}
+      <div className="absolute top-4 left-4 z-10 bg-white p-3 rounded shadow-md max-w-xs">
+        <h3 className="font-bold mb-2 text-center text-blue-700">Équipe de développement</h3>
+        <ul className="space-y-1">
+          {teamMembers.map((member, index) => (
+            <li key={index} className="border-b border-gray-200 py-1 last:border-0">
+              {member}
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* Camera view selector controls */}
       <div className="absolute top-4 right-4 z-10 bg-white p-2 rounded shadow-md">
         <h3 className="font-bold mb-2">Camera View</h3>
         <div className="flex flex-col space-y-1">
-          <button 
+          <button
             className={`px-3 py-1 rounded ${cameraView === 'front' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
             onClick={() => handleViewChange('front')}
           >
             Front
           </button>
-          <button 
+          <button
             className={`px-3 py-1 rounded ${cameraView === 'back' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
             onClick={() => handleViewChange('back')}
           >
             Back
           </button>
-          <button 
+          <button
             className={`px-3 py-1 rounded ${cameraView === 'cockpit' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
             onClick={() => handleViewChange('cockpit')}
           >
             Cockpit
           </button>
-          <button 
+          <button
             className={`px-3 py-1 rounded ${cameraView === 'side' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
             onClick={() => handleViewChange('side')}
           >
@@ -135,7 +156,7 @@ export default function Home() {
           </button>
         </div>
       </div>
-      
+
       <Canvas shadows camera={{ position: getInitialCameraPos(), fov: 60 }}>
         <Suspense fallback={null}>
           <Scene carRef={carRef} />
